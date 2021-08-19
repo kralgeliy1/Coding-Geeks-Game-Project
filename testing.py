@@ -13,6 +13,10 @@ import time
 playerTurtle = turtle.Turtle()
 playerTurtle.speed(2) #it will move a bit slowly
 
+#this turtle will print text on the screen
+textTurtle = turtle.Turtle()
+textTurtle.speed(0)
+
 #this is to access the background/screen for the game
 background = playerTurtle.getscreen()
 background.bgcolor('peru')  #background colour
@@ -41,6 +45,10 @@ obstacle2.hideturtle()
 obstacle3.hideturtle()
 obstacle4.hideturtle()
 obstacle5.hideturtle() 
+textTurtle.hideturtle()
+
+#boolean to test whether game is still going
+gameOver = False
 
 ###############################
 ## 1. draw the background   ###  
@@ -165,6 +173,15 @@ playerTurtle.speed(0)  #turtle will move instantly from lane to lane without wai
 # while obstacle == collision size &&
 #         player == same lane as obstacle:
 #                life lost! 
+
+
+# game over screen
+gameOver = True
+while gameOver == True:
+  textTurtle.write("GAME OVER!",
+                  move=False,   
+                  align='center',
+                  font=('Arial', 12, 'normal'))
 
 ##################################################
 ## 6. add a timer of some sort to record the   ###
