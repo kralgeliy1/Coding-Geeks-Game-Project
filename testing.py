@@ -6,12 +6,17 @@
 
 import turtle
 import time 
+import random 
 
 ### list all turtles here! ###
 
 #this will be the main player
 playerTurtle = turtle.Turtle()
 playerTurtle.speed(2) #it will move a bit slowly
+#import car designs
+turtle.register_shape('leftcar.gif') 
+turtle.register_shape('rightcar.gif') 
+turtle.register_shape('centercar.gif') 
 
 #this turtle will print text on the screen
 textTurtle = turtle.Turtle()
@@ -84,6 +89,7 @@ playerTurtle.goto(-80,-250)
 playerTurtle.right(32)
 playerTurtle.down()
 playerTurtle.forward(306)
+playerTurtle.up()
 
 ###################################################
 ##### MAYBE ADD INSTRUCTIONS WHILE THE GAME IS ####
@@ -95,93 +101,129 @@ playerTurtle.forward(306)
 ##    from left, center or right lane    ###
 ############################################
 
-def inLeftLane():   #function: turtle goes to left lane
-  playerTurtle.goto(-85,-180)
+playerTurtle.goto(0,0)
+inCenterLane = True
+inleftLane = False
+inRightLane = False
 
-def inRightLane():   #function: turtle goes to right lane
-  playerTurtle.goto(200,-180)
+def moveToLeftLane(): #function: turtle goes to left lane
+  playerTurtle.shape('leftcar.gif')
+  inleftLane = True
+  inRightLane = False
+  inCenterLane = False
 
-def inCenterLane():  #function: turtle goes to center lane
-  playerTurtle.goto(65,-180)
+def moveToRightLane(): #function: turtle goes to right lane
+  playerTurtle.shape('rightcar.gif')
+  inRightLane = True
+  inleftLane = False
+  inCenterLane = False
 
-playerTurtle.turtlesize(10)  #turtle is bigger
-playerTurtle.up() #turtle will not leave a trail/drawing
-inCenterLane()  #turtle will start in center lane
+def moveToCenterLane(): #function: turtle goes to center lane
+  playerTurtle.shape('centercar.gif')
+  inCenterLane = True
+  inleftLane = False
+  inRightLane = False
+
+moveToCenterLane()  #turtle will start in center lane
+
+playerTurtle.speed(0)  
+#turtle will move instantly from lane to lane without waiting
 
 playerTurtle.showturtle() #show player on screen
-playerTurtle.speed(0)  #turtle will move instantly from lane to lane without waiting
 
 ########################################################
 
-#### MAYBE ADD A COUNTDOWN BEFORE THE PLAYER STARTS ####
+#### COUNTDOWN BEFORE THE PLAYER STARTS ####
 
 # countdown 3
-# wait a second 
-# countdown 2
-# wait a second
-# countdown 1
-# start shown for one second (maybe more)
-
-#########################################################
-
-# allocate left key to moving left
-# if in left lane, cannot move left
-#   do not do anything
-# if in center lane move to left  
-#   centerlane == false
-#   left lane == true
-# if in right lane move to center
-#   centerlane == true
-#   right lane == false
-
-# allocate right key to right lane
-# if in left lane, move to center
-#   centerlane == true
-#   left lane == false
-# if in center lane move to right
-#   centerlane == false
-#   right lane == true
-# if in right lane, cannot move right
-
-##############################################
-## 3. spawn obstacles at random starting   ### 
-##    at the horizon line                  ###
-##############################################
-
-# randomly every 1-5 seconds,
-# obstacle appears at x,y
-
-#####################################################
-## 4. objects should move from top to bottom and  ###
-##    grow in size until it leaves the screen     ###
-##    and returns to the top of the screen        ###
-#####################################################
-
-# obstacle function:
-# obstacle moves one pixel
-# obstacle grows one pixel
-
-# while game is still playing:
-#   obstacle function keeps running
-
-######################################################
-## 5. when the car is of a certain size(would be   ###
-##    touchingthe obstacle) and the player's car   ###
-##    is in the same lane == game over             ###
-######################################################
-
-# while obstacle == collision size &&
-#         player == same lane as obstacle:
-#                life lost! 
-
-
-# game over screen
-gameOver = True
-while gameOver == True:
-  textTurtle.write("GAME OVER!",
+textTurtle.write("3",
                   move=False,   
                   align='center',
-                  font=('Arial', 12, 'normal'))
+                  font=('Arial', 16, 'normal'))
+time.sleep(1)# wait a second 
+textTurtle.clear()
+# countdown 2
+textTurtle.write("2",
+                  move=False,   
+                  align='center',
+                  font=('Arial', 16, 'normal'))
+time.sleep(1)# wait a second
+textTurtle.clear()
+# countdown 1
+textTurtle.write("1",
+                  move=False,   
+                  align='center',
+                  font=('Arial', 16, 'normal'))
+time.sleep(1)
+textTurtle.clear()
+
+# what to do when left key pressed
+def moveLeft():
+    if(inCenterLane == True):   
+      # if in center lane,  move to left 
+      moveToLeftLane()  
+    elif(inRightLane == True):   
+      # if in right lane, move to center
+      moveToCenterLane()
+    else: # if in left lane, cannot move 
+      moveToLeftLane() 
+
+# what to do when right key pressed
+def moveRight():
+  if(inCenterLane == True): 
+    # if in center lane move to left  
+    moveToRightLane()
+  elif(inRightLane == True):
+    # if in right lane move to center
+    moveToRightLane()
+  else:
+    moveToCenterLane()
+
+def rungame():
+  # allocate left key to moving left
+  playerTurtle.onkey('left', moveLeft)
+  
+  # allocate right key to right lane
+  playerTurtle.onkey('right', moveRight)
+
+  ##############################################
+  ## 3. spawn obstacles at random starting   ### 
+  ##    at the horizon line                  ###
+  ##############################################
+
+  # randomly every 1-5 seconds,
+  # obstacle appears at x,y
+
+  #####################################################
+  ## 4. objects should move from top to bottom and  ###
+  ##    grow in size until it leaves the screen     ###
+  ##    and returns to the top of the screen        ###
+  #####################################################
+
+  # obstacle function:
+  # obstacle moves one pixel
+  # obstacle grows one pixel
+
+  # while game is still playing:
+  #   obstacle function keeps running
+
+  ######################################################
+  ## 5. when the car is of a certain size(would be   ###
+  ##    touchingthe obstacle) and the player's car   ###
+  ##    is in the same lane == game over             ###
+  ######################################################
+
+  # while obstacle == collision size &&
+  #         player == same lane as obstacle:
+  #                life lost! 
+
+  # game over screen
+  gameOver = True
+  while gameOver == True:
+    textTurtle.write("GAME OVER!",
+                    move=False,   
+                    align='center',
+                    font=('Arial', 12, 'normal'))
 
 ##################################################
 ## 6. add a timer of some sort to record the   ###
