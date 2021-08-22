@@ -94,6 +94,7 @@ def moveToLeftLane():
     playerTurtle.goto(-5, 0)
     playerTurtle.shape('leftcar.gif')
     #variable to keep track of which lane the car is in
+    global whichLane
     whichLane = 1
     #1 = left lane
     #2 = center lane
@@ -103,8 +104,9 @@ def moveToLeftLane():
 
 #function: turtle goes to center lane
 def moveToCenterLane():
-    playerTurtle.goto(0, 0)
+    playerTurtle.goto(-3, 0)
     playerTurtle.shape('centercar.gif')
+    global whichLane
     whichLane = 2
     print(whichLane)
 
@@ -112,6 +114,7 @@ def moveToCenterLane():
 def moveToRightLane():
     playerTurtle.goto(0, 0)
     playerTurtle.shape('rightcar.gif')
+    global whichLane
     whichLane = 3
     print(whichLane)
 
@@ -165,7 +168,7 @@ def left():
 # function: what to do when right key pressed
 def right():
     if(whichLane == 2):
-        # if in center lane move to left
+        # if in center lane move to right
         moveToRightLane()
     elif(whichLane == 1):
         # if in left lane move to center
