@@ -24,29 +24,53 @@ background.bgcolor('peru')  # background colour
 background.setup(width=500, height=500)  # height + width
 
 #these are the obstacles
-obstacle1 = turtle.Turtle()
-obstacle2 = turtle.Turtle()
-obstacle3 = turtle.Turtle()
-obstacle4 = turtle.Turtle()
-obstacle5 = turtle.Turtle()
+L1 = turtle.Turtle()  #left lane obstacles
+L1.up()    #will not leave a trail
+L2 = turtle.Turtle()
+L2.up()
+
+C1 = turtle.Turtle()  #center lane obstacles
+C1.up()
+C2 = turtle.Turtle()
+C2.up()
+
+R1 = turtle.Turtle() #right lane obstacles
+R1.up()
+R2 = turtle.Turtle()
+R2.up()
+
+#here are the obstacle positions 
+#left positions
+#Lspot1 = 
+#center positions
+#right positions
 
 #hide all turtle shapes for now
 playerTurtle.hideturtle()
-obstacle1.hideturtle()
-obstacle2.hideturtle()
-obstacle3.hideturtle()
-obstacle4.hideturtle()
-obstacle5.hideturtle()
+L1.hideturtle()
+L2.hideturtle()
+C1.hideturtle()
+C2.hideturtle()
+R1.hideturtle()
+R2.hideturtle()
 textTurtle.hideturtle()
+
+#bring obstacles to starting position
+L1.goto(102, 0)
+L2.goto(102, 0)
+C1.goto(110, 0)
+C2.goto(110, 0)
+R1.goto(117, 0)
+R2.goto(117, 0)
 
 #importing car designs
 turtle.register_shape('leftcar.gif')
 turtle.register_shape('rightcar.gif')
 turtle.register_shape('centercar.gif')
 
-###############################
-## 1. draw the background   ###
-###############################
+##############################
+## 1. draw the background  ###
+##############################
 
 #left edge
 playerTurtle.pensize(5)
@@ -83,7 +107,6 @@ playerTurtle.up()
 ##### MAYBE ADD INSTRUCTIONS WHILE THE GAME 
 ##### IS LOADING/DRAWING OR SOME SORT OF INTRO  
 
-
 ############################################
 ## 2. spawn the main character to move   ###
 ##    from left, center or right lane    ###
@@ -118,15 +141,12 @@ def moveToRightLane():
     whichLane = 3
     print(whichLane)
 
-
-#turtle moves to center lane
-whichLane = 2
+#turtle starts in center lane
 moveToCenterLane()
 
 #turtle will move instantly from lane to lane without waiting
 playerTurtle.speed(0)
-
-playerTurtle.showturtle()  #finally show player on screen
+playerTurtle.showturtle()  #player now on screen
 
 ### COUNTDOWN BEFORE THE PLAYER STARTS ####
 # countdown 3
@@ -134,7 +154,6 @@ textTurtle.write("3",
                   move=False, 
                   align='center', 
                   font=('Arial', 16, 'normal'))
-                  
 time.sleep(1)  # wait a second
 textTurtle.clear()
 
@@ -154,16 +173,10 @@ textTurtle.write("1",
 time.sleep(1)
 textTurtle.clear()
 
-
-# function: what to do when left key pressed
-def left():
-    if(whichLane == 2):
-        # if in center lane,  move to left
-        moveToLeftLane()
+# function: what to do when left key pressed      moveToLeftLane()
     elif(whichLane == 3):
         # if in right lane, move to center
         moveToCenterLane()
-
 
 # function: what to do when right key pressed
 def right():
@@ -174,13 +187,12 @@ def right():
         # if in left lane move to center
         moveToCenterLane()
 
-
 gameOver = False  #we tell the system that the game is in play
 
 #starting the game
 def rungame(gameOver):
     lives = 3   # 3 lives
-    while gameOver == False:
+    while(gameOver == False):
         #check for button press
         background.listen()
         # allocate left key to moving left
@@ -195,6 +207,19 @@ def rungame(gameOver):
 
         # randomly every 1-5 seconds,
         # obstacle appears at x,y
+
+        #def placeObstacle(obstacle):
+        #  obj = obstacle
+        #  if(obj.isvisible == False):  #object not spawned
+        #    randomroll = randInt(0,3)   #25% chance car will spawn
+        #   if(randomroll == 0):
+        #      obj.isvisible = True
+        #  else:
+        #    if(#inleftlane):
+              
+        #    if(#inrightlane):
+
+        #    if(#incenterlane):            
 
         #####################################################
         ## 4. objects should move from top to bottom and  ###
@@ -218,14 +243,41 @@ def rungame(gameOver):
         # while obstacle == collision size &&
         #         player == same lane as obstacle:
         #                life lost!
+
+        #def hit(obstacle):
+        #  obj = obstacle #assign obstacle to usable variable
+        #  if(whichLane == 1):
+        #    if(obj == #collision size && whichLane == objLane):
+        #      global lives
+        #      lives -= 1
+        #  if(whichLane == 2):
+        #    if(obj == #collision size && whichLane == objLane):
+        #      global lives
+        #      lives -= 1
+        #  if(whichLane == 3):
+       #     if(obj == #collision size && whichLane == objLane):
+        #      global lives
+        #      lives -= 1
+
+        #check every obstacle for create or hit
+        #placeObstacle(obstacleL1)
+        #hit(obstacleL1)
+        #placeObstacle(obstacleL2)
+        #hit(obstacleL2)
+        #placeObstacle(obstacleC1)
+        #hit(obstacleC2)
+        #placeObstacle(obstacleR1)
+        #hit(obstacleR2)
+
+        #check if game can still be played
         if lives == 0:
-            gameOver = True
+            gameOver = True  # no lives = game over
 
-        turtle.mainloop()  #keep running the code
-    # game over screen
+        turtle.mainloop()  #continue checking the code
 
+rungame(False)  #run the entire function above while game is not over
 
-rungame(False)
+#present game over screen
 while gameOver == True:
     textTurtle.write("GAME OVER!",
                      move=False,
