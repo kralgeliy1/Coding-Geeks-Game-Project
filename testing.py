@@ -7,7 +7,6 @@
 import turtle
 import time
 import random
-import numpy
 from varname import nameof
 
 ### list all turtles here! ###
@@ -53,10 +52,13 @@ L1.speed(0)
 playerTurtle.hideturtle()
 L1.hideturtle()
 L2.hideturtle()
+L3.hideturtle()
 C1.hideturtle()
 C2.hideturtle()
+C3.hideturtle()
 R1.hideturtle()
 R2.hideturtle()
+R3.hideturtle()
 textTurtle.hideturtle()
 
 #bring obstacles to starting position
@@ -196,8 +198,8 @@ gameOver = False  #we tell the system that the game is in play
 #starting the game
 def rungame(gameOver):
 
-    #coordinates for all obstacles
-    coordinateList = [110, 0, 110, 0, 110, 0, 105, 0, 105, 0, 105, 0, 100, 0, 100, 0, 100, 0]
+    # phase = 30 ----> finish path ---> reset
+    #phase = [110, 0, 110, 0, 110, 0, 105, 0, 105, 0, 105, 0, 100, 0, 100, 0, 100, 0]
 
     lives = 3  # 3 lives
 
@@ -216,140 +218,78 @@ def rungame(gameOver):
       ##############################################
         
       #check to move or place obstacle onto game
-      def obstacleMovement(obstacle):
-        #which obstacle to use in current iteration of function
-        global lives, gameOver, coordinateList
+      def obstacleMovement(turtle):
         
-        obj = obstacle 
+        #read obstacle name to understand which lane it resides
+        obstacleName = nameof(turtle) 
+        print(turtle.isvisible)
 
-        obstacleName = nameof(obj)  #read obstacle name
+        if(turtle.isvisible == False):  #when object not yet spawned
+          chanceOfSpawn = 3
+          randomroll = random.randint(0,chanceOfSpawn) #spawn at random
+          print(randomroll)
+          if(randomroll == 1):   
+            turtle.showTurtle()  #spawn object
 
-        if(obj.isvisible == False): 
-          randomroll = random.randint(0,3) 
-          if(randomroll == 0):   #25% chance 
-            obj.showTurtle()  #spawn object
+          else:  #if obstacle already spawned = move certain pixels
 
-          else:  #if obstacle already spawned
+            #all moving objects move 5 pixels toward the player at a time
+            y = turtle.ycor() - 5  
+            collisionSpotY = -150  #spot where player meets obstacle
 
-          #######################################
-          # decide which obstacle to adjust for #
-          #######################################
-
-            if('L1' in obstacleName):  
-              xcoorInList = coordinateList[0]
-              ycoorInList = coordinateList[1]
-            if('L2' in obstacleName):
-              xcoorInList = coordinateList[2]
-              ycoorInList = coordinateList[3]
-            if('L3' in obstacleName):
-              xcoorInList = coordinateList[4]
-              ycoorInList = coordinateList[5]
-            if('C1' in obstacleName):
-              xcoorInList = coordinateList[6]
-              ycoorInList = coordinateList[7]
-            if('C2' in obstacleName):
-              xcoorInList = coordinateList[8]
-              ycoorInList = coordinateList[9]
-            if('C3' in obstacleName):
-              xcoorInList = coordinateList[10]
-              ycoorInList = coordinateList[11]
-            if('R1' in obstacleName):
-              xcoorInList = coordinateList[12]
-              ycoorInList = coordinateList[13]
-            if('R2' in obstacleName):
-              xcoorInList = coordinateList[14]
-              ycoorInList = coordinateList[15]
-            if('R3' in obstacleName):
-              xcoorInList = coordinateList[16]
-              ycoorInList = coordinateList[17]
-
-            #####################################################
-            ## 4. objects should move from top to bottom and  ###
-            ##    grow in size until it leaves the screen     ###
-            ##    and returns to the top of the screen        ###
-            #####################################################
-
-            #all moving objects move 5 pixels toward the player
-            ycoorInList - 5  
-            xcoorInList - 5  #default left positioning, will adjust for center and right lanes 
-
-            #left obstacle moves toward left lane
+            #left obstacle directions
             if('L' in obstacleName):  
-              if(obj.ycor < -275):  #if finished path, reset
-                xcoorInList = 110
-                ycoorInList = 0
+              collisionSpotX = -50
+              if(turtle.ycor < -275):  #if finished path, reset
+                turtle.hideTurtle()
+                x = 110
+                y = 0
+              else:   #if path not finished, move 5 pixel left
+                x = turtle.xcor() - 5  
 
-            #center obstacle moves toward center lane
+            #center obstacle directions
             elif('C' in obstacleName): 
-              if(obj.ycor < -275):
-                xcoorInList = 105
-                ycoorInList = 0
-              else:
-                xcoorInList + 3
+              collisionSpotX = 45
+              if(turtle.ycor < -275):  #if path finished, reset
+                turtle.hideTurtle()
+                x = 105
+                y = 0
+              else:  #if path not finished, move 2 pixel left
+                x = turtle.xcor() - 2   
                 
-            #right obstacle moves toward right lane
+            #right obstacle directions
             elif('R' in obstacleName): 
-              if(obj.ycor < -275):
-                xcoorInList = 100
-                ycoorInList = 0
-              else:
-                xcoorInList + 6
+              collisionSpotX = 140
+              if(turtle.ycor < -275):  #if path finished, reset
+                turtle.hideTurtle()
+                x = 100
+                y = 0
+              else: #if path not finished, move 1 pixel right
+                x = turtle.xcor() + 1  
             
-            obj.goto(ycoorInList,xcoorInList) #go to new adjustment
+            turtle.goto(x,y) #go to new adjustment
 
-            ######################################################
-            ## 5. when the car is of a certain size(would be   ###
-            ##    touching the obstacle) and the player's car   ###
-            ##    is in the same lane == game over             ###
-            ######################################################
+            distance = turtle.distance(collisionSpotX, collisionSpotY)
 
-            # while obstacle == collision size &&
-            #         player == same lane as obstacle:
-            #                life lost!
-        
-            collisionSpotY = -150
+            if(5 >= distance >= 15 and whichLane == 1):
+              global lives
+              lives -= 1  #car + obstacle in same spot = life lost  
 
-            if('L' in obstacleName):  
-              collisionSpotX = -50
-
-            elif('C' in obstacleName):
-              collisionSpotX = -50
-
-            elif('R' in obstacleName): 
-              collisionSpotX = -50
-
-            distance = obj.distance(collisionSpotX, collisionSpotY)
-
-            if('L' in obstacleName):  
-              if(250 >= distance >= 150 and whichLane == 1):
-                global lives
-                lives -=1
-
-            elif('C' in obstacleName):
-              if(250 >= distance >= 150 and whichLane == 2):
-                lives -=1
-
-            elif('R' in obstacleName):
-              if(250 >= distance >= 150 and whichLane == 1):
-                lives -=1
-          
-
-        #check every obstacle for movement and collisions
-        obstacleMovement(L1)
-        #obstacleMovement(L2)
-        #obstacleMovement(L3)
-        #obstacleMovement(R1)
-        #obstacleMovement(R2)
-        #obstacleMovement(R3)
-        #obstacleMovement(C1)
-        #obstacleMovement(C2)
-        #obstacleMovement(C3)
+      #perform every obstacle for movement and collisions
+      #obstacleMovement(L2)
+      #obstacleMovement(L3)
+      #obstacleMovement(R1)
+      #obstacleMovement(R2)
+      #obstacleMovement(R3)
+      #obstacleMovement(C1)
+      #obstacleMovement(C2)
+      #obstacleMovement(C3)
 
         #check lives
-        if lives == 0:
-            gameOver = True  # no lives = game over
+      if lives == 0:
+        gameOver = True  # no lives = game over
 
-        turtle.mainloop()  #continue checking the code
+      turtle.mainloop()  #continue checking the code
 
 rungame(False)  #run the game 
 
