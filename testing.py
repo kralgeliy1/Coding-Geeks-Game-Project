@@ -271,9 +271,17 @@ def rungame(gameOver):
 
             distance = turtle.distance(collisionSpotX, collisionSpotY)
 
-            if(5 >= distance >= 15 and whichLane == 1):
+            global whichLane
+            
+            if(5 >= distance >= 15):
               global lives
-              lives -= 1  #car + obstacle in same spot = life lost  
+              if('L' in obstacleName and whichLane == 1): 
+                #car and obstacle in same spot = life lost 
+                lives -= 1   
+              elif('C' in obstacleName and whichLane == 2): 
+                lives -= 1
+              elif('R' in obstacleName and whichLane == 3): 
+                lives -= 1  
 
       #perform every obstacle for movement and collisions
       #obstacleMovement(L2)
