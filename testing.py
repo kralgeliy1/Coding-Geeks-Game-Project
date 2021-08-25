@@ -222,7 +222,10 @@ def rungame(gameOver):
         
         #read obstacle name to understand which lane it resides
         obstacleName = nameof(turtle) 
-        print(turtle.isvisible)
+        
+        print("Turtle with the name {} is Visible".format(obstacleName)) if turtle.isvisible() else print("Turtle with the name {} is Invisible".format(obstacleName))
+
+        print("The obstacleName in obstacleMovement function is {}.".format(obstacleName))
 
         if(turtle.isvisible == False):  #when object not yet spawned
           chanceOfSpawn = 3
@@ -284,7 +287,16 @@ def rungame(gameOver):
                 lives -= 1  
 
       #perform every obstacle for movement and collisions
-      #obstacleMovement(L2)
+     
+      #Solution 1, using map, this is a functional programming solution, not the recommended approach because it creates a resulting list that we don't use. But it is cool and fits 1 line.
+      list(map(obstacleMovement, [L2, L3, R1, R2, R3, C1, C2, C3]))
+
+      #Solution 2, using for loop, pretty intuitive solution, the recommended approach.
+      # for obj in [L2, L3, R1, R2, R3, C1, C2, C3]:
+      #   obstacleMovement(obj)
+
+    
+      # obstacleMovement(L2)
       #obstacleMovement(L3)
       #obstacleMovement(R1)
       #obstacleMovement(R2)
