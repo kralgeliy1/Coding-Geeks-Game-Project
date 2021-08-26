@@ -1,43 +1,50 @@
-# Hey team!
-
-### I'm going to list the things we need to code here
-### and feel free to add a comment to put something we
-### need to do as well!
-
 import turtle
+import random 
 import time
-import random
-from varname import nameof
+from varname import nameof 
 
-### list all turtles here! ###
-
-#this will be the main player
-playerTurtle = turtle.Turtle()
-playerTurtle.speed(0)  #it will move a bit slowly
+#main turtle
+t = turtle.Turtle()
+t.shape('circle')
 
 #this turtle will be used to print text on the screen
 textTurtle = turtle.Turtle()
 textTurtle.speed(0)
 
 #this is to access the background/screen for the game
-background = playerTurtle.getscreen()
-background.bgcolor('peru')  # background colour
+background = t.getscreen()
 background.setup(width=500, height=500)  # height + width
 
-#these are the obstacles
-L1 = turtle.Turtle()  #left lane obstacles
+#import car designs + backgrounds
+turtle.register_shape('leftcar.gif')
+turtle.register_shape('rightcar.gif')
+turtle.register_shape('centercar.gif')
+
+#obstacle turtles
+L1 = turtle.Turtle()
 L2 = turtle.Turtle()
 L3 = turtle.Turtle()
-C1 = turtle.Turtle()  #center lane obstacles
+C1 = turtle.Turtle()
 C2 = turtle.Turtle()
 C3 = turtle.Turtle()
-R1 = turtle.Turtle()  #right lane obstacles
+R1 = turtle.Turtle()
 R2 = turtle.Turtle()
 R3 = turtle.Turtle()
 
-#obstacles should not leave a trail
-L1.up()  
-L2.up()  
+#hide turtles for now
+L1.ht()
+L2.ht()
+L3.ht()
+C1.ht()
+C2.ht()
+C3.ht()
+R1.ht()
+R2.ht()
+R3.ht()
+
+#turtles should not leave trails
+L1.up()
+L2.up()
 L3.up()
 C1.up()
 C2.up()
@@ -46,82 +53,47 @@ R1.up()
 R2.up()
 R3.up()
 
-L1.speed(0)
+#obstacles go to starting position
+L1.goto(100,0)
+L2.goto(100,0)
+L3.goto(100,0)
+C1.goto(105,0)
+C2.goto(105,0)
+C3.goto(105,0)
+R1.goto(110,0)
+R2.goto(110,0)
+R3.goto(110,0)
 
-#hide all turtle shapes for now
-playerTurtle.hideturtle()
-L1.hideturtle()
-L2.hideturtle()
-L3.hideturtle()
-C1.hideturtle()
-C2.hideturtle()
-C3.hideturtle()
-R1.hideturtle()
-R2.hideturtle()
-R3.hideturtle()
-textTurtle.hideturtle()
+#variables tracking iterations
+chance = 300  #chance of obstacle spawning 
+counter = 0  #counts each iteration
+threshold = 500  #amount of iterations until change
+speed = 1  #speed of obstacles
+lives = 3  #lives to count
 
-#bring obstacles to starting position
-L1.goto(100, 0)
-L2.goto(100, 0)
-C1.goto(105, 0)
-C2.goto(105, 0)
-R1.goto(110, 0)
-R2.goto(110, 0)
+#random default variables to change later
+#tracks collision spot
+CollisionY = -150
+CollisionX = -150
 
-#importing car designs
-turtle.register_shape('leftcar.gif')
-turtle.register_shape('rightcar.gif')
-turtle.register_shape('centercar.gif')
+#tracks obstacle names/ which lane to pass
+obstacleName = L1
 
-##############################
-## 1. draw the background  ###
-##############################
+#starting speed for turtles
+L1.speed(speed)
+L2.speed(speed)
+L3.speed(speed)
+C1.speed(speed)
+C2.speed(speed)
+C3.speed(speed)
+R1.speed(speed)
+R2.speed(speed)
+R3.speed(speed)
 
-#left edge
-playerTurtle.pensize(5)
-playerTurtle.up()
-playerTurtle.goto(-250, -250)
-playerTurtle.left(35)
-playerTurtle.down()
-playerTurtle.forward(425)
-
-#horizon line
-playerTurtle.right(35)
-playerTurtle.backward(335)
-playerTurtle.forward(470)
-playerTurtle.backward(120)
-
-#right edge
-playerTurtle.right(65)
-playerTurtle.forward(300)
-
-# middle lane
-playerTurtle.up()
-playerTurtle.goto(87, -250)
-playerTurtle.left(150)
-playerTurtle.down()
-playerTurtle.forward(245)
-
-playerTurtle.up()
-playerTurtle.goto(-80, -250)
-playerTurtle.right(32)
-playerTurtle.down()
-playerTurtle.forward(306)
-playerTurtle.up()
-
-##### MAYBE ADD INSTRUCTIONS WHILE THE GAME 
-##### IS LOADING/DRAWING OR SOME SORT OF INTRO  
-
-############################################
-## 2. spawn the main character to move   ###
-##    from left, center or right lane    ###
-############################################
-
-#function: turtle goes to left lane
+# function: moving to left lane
 def moveToLeftLane():
-  playerTurtle.goto(-5, 0)
-  playerTurtle.shape('leftcar.gif')
+  t.goto(-5, 0)
+  t.shape('leftcar.gif')
 
   #variable to keep track of which lane the car is in
   global whichLane
@@ -129,55 +101,29 @@ def moveToLeftLane():
   #1 = left lane
   #2 = center lane
   #3 = right lane
-  print(whichLane)
 
-#function: turtle goes to center lane
+
+# function: moving to center lane
 def moveToCenterLane():
-  playerTurtle.goto(-3, 0)
-  playerTurtle.shape('centercar.gif')
+  t.goto(-3, 0)
+  t.shape('centercar.gif')
   global whichLane
   whichLane = 2
-  print(whichLane)
+  #1 = left lane
+  #2 = center lane
+  #3 = right lane
 
-#function: turtle goes to right lane
+
+# function: moving to right lane
 def moveToRightLane():
-  playerTurtle.goto(0, 0)
-  playerTurtle.shape('rightcar.gif')
+  t.goto(0, 0)
+  t.shape('rightcar.gif')
   global whichLane
   whichLane = 3
   print(whichLane)
-
-#turtle starts in center lane
-moveToCenterLane()
-
-#turtle will move instantly from lane to lane without waiting
-playerTurtle.speed(0)
-playerTurtle.showturtle()  #player now on screen
-
-### COUNTDOWN BEFORE THE PLAYER STARTS ####
-# countdown 3
-textTurtle.write("3", 
-                  move=False, 
-                  align='center', 
-                  font=('Arial', 16, 'normal'))
-time.sleep(1)  # wait a second
-textTurtle.clear()
-
-# countdown 2
-textTurtle.write("2",
-                  move=False, 
-                  align='center', 
-                  font=('Arial', 16, 'normal'))
-time.sleep(1)  # wait a second
-textTurtle.clear()
-
-# countdown 1
-textTurtle.write("1", 
-                  move=False, 
-                  align='center', 
-                  font=('Arial', 16, 'normal'))
-time.sleep(1)
-textTurtle.clear()
+  #1 = left lane
+  #2 = center lane
+  #3 = right lane
 
 # function: what to do when left key pressed      
 def left():
@@ -193,163 +139,187 @@ def right():
   elif(whichLane == 1):   #left -> center lane
     moveToCenterLane()
 
-gameOver = False  #we tell the system that the game is in play
+##############################
+## 1. draw the background  ###
+##############################
 
-#starting the game
-def rungame(gameOver):
+#left edge
+t.pensize(5)
+t.up()
+t.goto(-250, -250)
+t.left(35)
+t.down()
+t.forward(425)
 
-    # phase = 30 ----> finish path ---> reset
-    #phase = [110, 0, 110, 0, 110, 0, 105, 0, 105, 0, 105, 0, 100, 0, 100, 0, 100, 0]
+#horizon line
+t.right(35)
+t.backward(335)
+t.forward(470)
+t.backward(120)
 
-    lives = 3  # 3 lives
+#right edge
+t.right(65)
+t.forward(300)
 
-    #while game is still playing
-    while(gameOver == False):
-      # check for button press
-      background.listen()
-      # allocate left key to moving left
-      background.onkey(left, 'Left')
-      # allocate right key to moving right
-      background.onkey(right, 'Right')
+# middle lane
+t.up()
+t.goto(87, -250)
+t.left(150)
+t.down()
+t.forward(245)
 
-      ##############################################
-      ## 3. spawn obstacles at random starting   ###
-      ##    at the horizon line                  ###
-      ##############################################
-        
-      #check to move or place obstacle onto game
-      def obstacleMovement(turtle):
-        
-        #read obstacle name to understand which lane it resides
-        obstacleName = nameof(turtle) 
-        
-        print("Turtle with the name {} is Visible".format(obstacleName)) if turtle.isvisible() else print("Turtle with the name {} is Invisible".format(obstacleName))
+t.up()
+t.goto(-80, -250)
+t.right(32)
+t.down()
+t.forward(306)
+t.up()
 
-        print("The obstacleName in obstacleMovement function is {}.".format(obstacleName))
+# function: moving obstacles 
+def allObstacle(turtle):
+  global lives, whichLane, obstacleName #get lives and lane travelling
 
-        if(turtle.isvisible == False):  #when object not yet spawned
-          chanceOfSpawn = 3
-          randomroll = random.randint(0,chanceOfSpawn) #spawn at random
-          print(randomroll)
-          if(randomroll == 1):   
-            turtle.showTurtle()  #spawn object
+  #variables establishing x-coordinates, y-coordinates and visibility of turtle  
+  x = turtle.xcor()
+  y = turtle.ycor()
+  visible = turtle.isvisible()
 
-          else:  #if obstacle already spawned = move certain pixels
+  #set collision spot
+  collisionY = -150
 
-            #all moving objects move 5 pixels toward the player at a time
-            y = turtle.ycor() - 5  
-            collisionSpotY = -150  #spot where player meets obstacle
+  #set next move for all obstacles in the y-direction
+  y -= 5
 
-            #left obstacle directions
-            if('L' in obstacleName):  
-              collisionSpotX = -50
-              if(turtle.ycor < -275):  #if finished path, reset
-                turtle.hideTurtle()
-                x = 110
-                y = 0
-              else:   #if path not finished, move 5 pixel left
-                x = turtle.xcor() - 5  
+  #if object not yet spawned
+  if(visible == False):
+    index = random.randint(0, chance) #roll dice
+    if(index == 0): 
+      print("SPAWN", obstacleName)
+      turtle.st()   #if dice is 0, spawn
+      visible = True   #ensure visibility is true
 
-            #center obstacle directions
-            elif('C' in obstacleName): 
-              collisionSpotX = 45
-              if(turtle.ycor < -275):  #if path finished, reset
-                turtle.hideTurtle()
-                x = 105
-                y = 0
-              else:  #if path not finished, move 2 pixel left
-                x = turtle.xcor() - 2   
-                
-            #right obstacle directions
-            elif('R' in obstacleName): 
-              collisionSpotX = 140
-              if(turtle.ycor < -275):  #if path finished, reset
-                turtle.hideTurtle()
-                x = 100
-                y = 0
-              else: #if path not finished, move 1 pixel right
-                x = turtle.xcor() + 1  
-            
-            turtle.goto(x,y) #go to new adjustment
+  #if object already spawned
+  else:
+    if('L' in obstacleName): #left obstacles
+      if(y == -275):  
+        turtle.ht()    #if finished path, reset
+        x = 110 
+        y = 0
+        visible = False 
+      else:
+        x -= 5
 
-            distance = turtle.distance(collisionSpotX, collisionSpotY)
+      ##### COLLISION CHECK ######
 
-            global whichLane
-            
-            if(5 >= distance >= 15):
-              global lives
-              if('L' in obstacleName and whichLane == 1): 
-                #car and obstacle in same spot = life lost 
-                lives -= 1   
-              elif('C' in obstacleName and whichLane == 2): 
-                lives -= 1
-              elif('R' in obstacleName and whichLane == 3): 
-                lives -= 1  
+      collisionX = -50
 
-      #perform every obstacle for movement and collisions
-     
-      #Solution 1, using map, this is a functional programming solution, not the recommended approach because it creates a resulting list that we don't use. But it is cool and fits 1 line.
-      list(map(obstacleMovement, [L2, L3, R1, R2, R3, C1, C2, C3]))
+      #distance of obstacle to collision point
+      distance = turtle.distance(collisionX,collisionY)
+      print('distance:',distance)
 
-      #Solution 2, using for loop, pretty intuitive solution, the recommended approach.
-      # for obj in [L2, L3, R1, R2, R3, C1, C2, C3]:
-      #   obstacleMovement(obj)
+      if(5 > distance > 15):
+        if(whichLane == 1):
+          lives -= 1
+          print('LIFE LOST')
 
+    elif('C' in obstacleName): #center obstacles
+      if(y == -275):
+        turtle.ht()  #if finished path, reset
+        x = 105
+        y = 0
+        visible = False
+      else:
+        x -= 2
+
+
+      ##### COLLISION CHECK ######
+
+      collisionX = 45
+
+      distance = turtle.distance(collisionX,collisionY)
+      print('distance:',distance)
+
+      if(5 > distance > 15):
+        if(whichLane == 2):
+          lives -= 1
+          print('LIFE LOST')
+
+    elif('R' in obstacleName): #right obstacles
+      if(y == -275):
+        turtle.ht()   #if finished path, reset
+        x = 110
+        y = 0
+        visible = False
+      else:
+        x += 1
+      
+      ##### COLLISION CHECK ######
+
+      collisionX = 50 # horizontal collision coordinate
+
+      #check distance of player to collision
+      distance = turtle.distance(collisionX,collisionY)
+      print('distance:',distance)
+
+      if(5 > distance > 15):
+        if(whichLane == 3):
+          lives -= 1
+          print('LIFE LOST')
+          
+    turtle.goto(x,y)
+   
+moveToCenterLane()
+
+def play():
+  global lives, whichLane, counter, chance, threshold, speed, obstacleName
+  
+  while(lives > 0):
+    background.listen()
+    background.onkey(left, 'Left')
+    background.onkey(right, 'Right')
+
+    for i in range(9):
+      #passes name to determine course of action
+      #using the same function for moving an object
+      if(i == 1):
+        obstacleName = nameof(L1)
+        allObstacle(L1)
+      elif(i == 2):
+        obstacleName = nameof(L2)
+        allObstacle(L2)
+      elif(i == 3):
+        obstacleName = nameof(L3)
+        allObstacle(L3)
+      elif(i == 4):
+        obstacleName = nameof(C1)
+        allObstacle(C1)
+      elif(i == 5):
+        obstacleName = nameof(C2)
+        allObstacle(C2)
+      elif(i == 6):
+        obstacleName = nameof(C3)
+        allObstacle(C3)
+      elif(i == 7):
+        obstacleName = nameof(R1)
+        allObstacle(R1)
+      elif(i == 8):
+        obstacleName = nameof(R2)
+        allObstacle(R2)
+      elif(i == 9):
+        obstacleName = nameof(R3)
+        allObstacle(R3)
+
+    counter +=1
+    if(counter==threshold):
+      chance -= 20
+      threshold += 1000
+      speed += 1
+      for obj in [L1, L2, L3, C1, C2, C3, R1, R2, R3]:
+        obj.speed(speed)
     
-      # obstacleMovement(L2)
-      #obstacleMovement(L3)
-      #obstacleMovement(R1)
-      #obstacleMovement(R2)
-      #obstacleMovement(R3)
-      #obstacleMovement(C1)
-      #obstacleMovement(C2)
-      #obstacleMovement(C3)
+  turtle.mainloop()
 
-        #check lives
-      if lives == 0:
-        gameOver = True  # no lives = game over
+play()
 
-      turtle.mainloop()  #continue checking the code
-
-rungame(False)  #run the game 
-
-#present game over screen
-while gameOver == True:
-    textTurtle.write("GAME OVER!",
-                     move=False,
-                     align='center',
-                     font=('Arial', 12, 'normal'))
-    turtle.exitonclick()  #
-
-##################################################
-## 6. add a timer of some sort to record the   ###
-##    players score maybe add 3 lives          ###
-##################################################
-
-# every millisecond = 1 point recorded
-# while life lost < 0:
-#     game over!
-
-####### optional stuff ######
-
-##################################################
-## 7. make props that will travel alongside    ###
-##    the road to make it look like its moving ###
-##################################################
-
-# same code as obstacle but located
-# on the side of the screen without any penalties
-
-################################################
-## 8. add HCC logo as bonus that will change  ##
-##    the player's car in some way            ##
-################################################
-
-# HCC spawn at random 30-60 sec interval
-
-# special change! function:
-# player changes color/design
-
-# while HCC logo == collision size &&
-#         player == same lane as HCC logo:
-#                special change!
+def gameOverScreen():
+  t.write('GAME OVER')
