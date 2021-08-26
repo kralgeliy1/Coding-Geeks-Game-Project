@@ -1,24 +1,30 @@
 import turtle
-import random 
+import random
 import time
-from varname import nameof 
+from varname import nameof
 
 #main turtle
 t = turtle.Turtle()
 t.shape('circle')
 
 #this turtle will be used to print text on the screen
-textTurtle = turtle.Turtle()
-textTurtle.speed(0)
+text = turtle.Turtle()
+text.ht()
+text.color('white')
+text.speed(0)
 
 #this is to access the background/screen for the game
 background = t.getscreen()
 background.setup(width=500, height=500)  # height + width
 
 #import car designs + backgrounds
+turtle.register_shape('centerlane.gif')
+turtle.register_shape('rightlane.gif')
+turtle.register_shape('leftlane.gif')
 turtle.register_shape('leftcar.gif')
 turtle.register_shape('rightcar.gif')
-turtle.register_shape('centercar.gif')
+turtle.register_shape('centerobs.gif')
+turtle.colormode(255)
 
 #obstacle turtles
 L1 = turtle.Turtle()
@@ -54,22 +60,23 @@ R2.up()
 R3.up()
 
 #obstacles go to starting position
-L1.goto(100,0)
-L2.goto(100,0)
-L3.goto(100,0)
-C1.goto(105,0)
-C2.goto(105,0)
-C3.goto(105,0)
-R1.goto(110,0)
-R2.goto(110,0)
-R3.goto(110,0)
+L1.goto(100, 0)
+L2.goto(100, 0)
+L3.goto(100, 0)
+C1.goto(105, 0)
+C2.goto(105, 0)
+C3.goto(105, 0)
+R1.goto(110, 0)
+R2.goto(110, 0)
+R3.goto(110, 0)
 
 #variables tracking iterations
-chance = 300  #chance of obstacle spawning 
+chance = 300  #chance of obstacle spawning
 counter = 0  #counts each iteration
 threshold = 500  #amount of iterations until change
 speed = 1  #speed of obstacles
 lives = 3  #lives to count
+obstacle_count = 0
 
 #random default variables to change later
 #tracks collision spot
@@ -90,54 +97,57 @@ R1.speed(speed)
 R2.speed(speed)
 R3.speed(speed)
 
+
 # function: moving to left lane
 def moveToLeftLane():
-  t.goto(-5, 0)
-  t.shape('leftcar.gif')
+    t.goto(-5, 0)
+    t.shape('leftlane.gif')
 
-  #variable to keep track of which lane the car is in
-  global whichLane
-  whichLane = 1
-  #1 = left lane
-  #2 = center lane
-  #3 = right lane
+    #variable to keep track of which lane the car is in
+    global whichLane
+    whichLane = 1
+    #1 = left lane
+    #2 = center lane
+    #3 = right lane
 
 
 # function: moving to center lane
 def moveToCenterLane():
-  t.goto(-3, 0)
-  t.shape('centercar.gif')
-  global whichLane
-  whichLane = 2
-  #1 = left lane
-  #2 = center lane
-  #3 = right lane
+    t.goto(-3, 0)
+    t.shape('centerlane.gif')
+    global whichLane
+    whichLane = 2
+    #1 = left lane
+    #2 = center lane
+    #3 = right lane
 
 
 # function: moving to right lane
 def moveToRightLane():
-  t.goto(0, 0)
-  t.shape('rightcar.gif')
-  global whichLane
-  whichLane = 3
-  print(whichLane)
-  #1 = left lane
-  #2 = center lane
-  #3 = right lane
+    t.goto(0, 0)
+    t.shape('rightlane.gif')
+    global whichLane
+    whichLane = 3
+    #1 = left lane
+    #2 = center lane
+    #3 = right lane
 
-# function: what to do when left key pressed      
+
+# function: what to do when left key pressed
 def left():
-  if(whichLane == 2):  #center -> left lane
-    moveToLeftLane()
-  elif(whichLane == 3):  #right -> center lane
-    moveToCenterLane()
+    if (whichLane == 2):  #center -> left lane
+        moveToLeftLane()
+    elif (whichLane == 3):  #right -> center lane
+        moveToCenterLane()
+
 
 # function: what to do when right key pressed
 def right():
-  if(whichLane == 2):   #center => right lane
-    moveToRightLane()
-  elif(whichLane == 1):   #left -> center lane
-    moveToCenterLane()
+    if (whichLane == 2):  #center => right lane
+        moveToRightLane()
+    elif (whichLane == 1):  #left -> center lane
+        moveToCenterLane()
+
 
 ##############################
 ## 1. draw the background  ###
@@ -175,151 +185,230 @@ t.down()
 t.forward(306)
 t.up()
 
-# function: moving obstacles 
+### COUNTDOWN BEFORE THE PLAYER STARTS ####
+# countdown 3
+text.write("3", move=False, align='center', font=('Arial', 16, 'normal'))
+time.sleep(1)  # wait a second
+text.clear()
+
+# countdown 2
+text.write("2", move=False, align='center', font=('Arial', 16, 'normal'))
+time.sleep(1)  # wait a second
+text.clear()
+
+# countdown 1
+text.write("1", move=False, align='center', font=('Arial', 16, 'normal'))
+time.sleep(1)
+text.clear()
+
+sizeL = 1
+sizeW = 1
+
+# function: moving obstacles
 def allObstacle(turtle):
-  global lives, whichLane, obstacleName #get lives and lane travelling
+    global lives, whichLane, obstacleName, obstacle_count, sizeL, sizeW  #get lives and lane travelling
 
-  #variables establishing x-coordinates, y-coordinates and visibility of turtle  
-  x = turtle.xcor()
-  y = turtle.ycor()
-  visible = turtle.isvisible()
+    #variables establishing x-coordinates, y-coordinates and visibility of turtle
+    x = turtle.xcor()  
+    y = turtle.ycor()
+    visible = turtle.isvisible()
 
-  #set collision spot
-  collisionY = -150
+    #set collision spot
+    collisionY = -150
 
-  #set next move for all obstacles in the y-direction
-  y -= 5
+    #set next move for all obstacles in the y-direction
+    y -= 5
 
-  #if object not yet spawned
-  if(visible == False):
-    index = random.randint(0, chance) #roll dice
-    if(index == 0): 
-      print("SPAWN", obstacleName)
-      turtle.st()   #if dice is 0, spawn
-      visible = True   #ensure visibility is true
+    #if object not yet spawned
+    if (visible == False):
+        index = random.randint(0, chance)  #roll dice
+        if (index == 0):
+            turtle.st()  #if dice is 0, spawn
+            visible = True  #ensure visibility is true
 
-  #if object already spawned
-  else:
-    if('L' in obstacleName): #left obstacles
-      if(y == -275):  
-        turtle.ht()    #if finished path, reset
-        x = 110 
-        y = 0
-        visible = False 
-      else:
-        x -= 5
+    #if object already spawned
+    else:
+        shape_list = ['triangle', 'square', 'circle', 'arrow']
+        Rvalue = random.randint(0,255)
+        Gvalue = random.randint(0,255)
+        Bvalue = random.randint(0,255)
 
-      ##### COLLISION CHECK ######
+        if ('L' in obstacleName):  #left obstacles
+            if (y == -5):
+                random_shape = random.randint(0, 3)
+                print(random_shape)
+                turtle.shape(shape_list[random_shape])
 
-      collisionX = -50
+                turtle.color((0, 0, 0), (Rvalue, Gvalue, Bvalue))
 
-      #distance of obstacle to collision point
-      distance = turtle.distance(collisionX,collisionY)
-      print('distance:',distance)
+            if (y == -275):
+                turtle.ht()  #if finished path, reset
+                x = 110
+                y = 0
+                visible = False
+                obstacle_count = 1
+                sizeL = 0.3
+                sizeW = 0.3
+            else:
+                x -= 5
+                sizeL += 0.02
+                sizeW += 0.02
+            ##### COLLISION CHECK ######
 
-      if(5 > distance > 15):
-        if(whichLane == 1):
-          lives -= 1
-          print('LIFE LOST')
+            collisionX = -50
 
-    elif('C' in obstacleName): #center obstacles
-      if(y == -275):
-        turtle.ht()  #if finished path, reset
-        x = 105
-        y = 0
-        visible = False
-      else:
-        x -= 2
+            #distance of obstacle to collision point
+            distance = turtle.distance(collisionX, collisionY)
 
+            if (0 < distance < 15):
+                if (whichLane == 1):
+                    lives -= 1
+                    print('LIFE LOST')
+                    turtle.ht()
+                    visible = False
 
-      ##### COLLISION CHECK ######
+        elif ('C' in obstacleName):  #center obstacles
+            if (y == -5):
+                random_shape = random.randint(0, 2)
+                print(random_shape)
+                turtle.shape(shape_list[random_shape])
+                turtle.color((0, 0, 0), (Rvalue, Gvalue, Bvalue))
+            if (y == -275):
+                turtle.ht()  #if finished path, reset
+                x = 105
+                y = 0
+                visible = False
+                obstacle_count += 1
+                sizeL = 0.3
+                sizeW = 0.3
+            else:
+                x -= 2
+                sizeL += 0.02
+                sizeW += 0.02
+                
 
-      collisionX = 45
+            ##### COLLISION CHECK ######
 
-      distance = turtle.distance(collisionX,collisionY)
-      print('distance:',distance)
+            collisionX = 45
 
-      if(5 > distance > 15):
-        if(whichLane == 2):
-          lives -= 1
-          print('LIFE LOST')
+            #obstacle to 45, -150
+            distance = turtle.distance(collisionX, collisionY)
 
-    elif('R' in obstacleName): #right obstacles
-      if(y == -275):
-        turtle.ht()   #if finished path, reset
-        x = 110
-        y = 0
-        visible = False
-      else:
-        x += 1
-      
-      ##### COLLISION CHECK ######
+            if (5 < distance < 15):
+                if (whichLane == 2):
+                    lives -= 1
+                    print('LIFE LOST')
+                    turtle.ht()
+                    visible = False
 
-      collisionX = 50 # horizontal collision coordinate
+        elif ('R' in obstacleName):  #right obstacles
+            if (y == -5):
+                random_shape = random.randint(0, 2)
+                print(random_shape)
+                turtle.shape(shape_list[random_shape])
 
-      #check distance of player to collision
-      distance = turtle.distance(collisionX,collisionY)
-      print('distance:',distance)
+                turtle.color((0, 0, 0), (Rvalue, Gvalue, Bvalue))
+            if (y == -275):
+                turtle.ht()  #if finished path, reset
+                x = 110
+                y = 0
+                visible = False
+                obstacle_count += 1
+                sizeL = 0.3
+                sizeW = 0.3
+            else:
+                x += 1
+                sizeL += 0.02
+                sizeW += 0.02
+            ##### COLLISION CHECK ######
 
-      if(5 > distance > 15):
-        if(whichLane == 3):
-          lives -= 1
-          print('LIFE LOST')
-          
-    turtle.goto(x,y)
-   
+            collisionX = 140  # horizontal collision coordinate
+
+            #check distance of player to collision
+            distance = turtle.distance(collisionX, collisionY)
+            #print("Distance of right obstacle:{}".format(distance))
+
+            if (5 < distance < 15):
+                if (whichLane == 3):
+                    lives -= 1
+                    print('LIFE LOST')
+                    turtle.ht()
+                    visible = False
+
+        turtle.goto(x, y) 
+        turtle.shapesize(sizeL,sizeW)
+
 moveToCenterLane()
 
 def play():
-  global lives, whichLane, counter, chance, threshold, speed, obstacleName
-  
-  while(lives > 0):
-    background.listen()
-    background.onkey(left, 'Left')
-    background.onkey(right, 'Right')
+    global lives, whichLane, counter, chance, threshold, speed, obstacleName
 
-    for i in range(9):
-      #passes name to determine course of action
-      #using the same function for moving an object
-      if(i == 1):
-        obstacleName = nameof(L1)
-        allObstacle(L1)
-      elif(i == 2):
-        obstacleName = nameof(L2)
-        allObstacle(L2)
-      elif(i == 3):
-        obstacleName = nameof(L3)
-        allObstacle(L3)
-      elif(i == 4):
-        obstacleName = nameof(C1)
-        allObstacle(C1)
-      elif(i == 5):
-        obstacleName = nameof(C2)
-        allObstacle(C2)
-      elif(i == 6):
-        obstacleName = nameof(C3)
-        allObstacle(C3)
-      elif(i == 7):
-        obstacleName = nameof(R1)
-        allObstacle(R1)
-      elif(i == 8):
-        obstacleName = nameof(R2)
-        allObstacle(R2)
-      elif(i == 9):
-        obstacleName = nameof(R3)
-        allObstacle(R3)
+    while (lives > 0): 
+        background.listen()         
+        background.onkey(right, 'Left')
+        background.onkey(left, 'Right')
 
-    counter +=1
-    if(counter==threshold):
-      chance -= 20
-      threshold += 1000
-      speed += 1
-      for obj in [L1, L2, L3, C1, C2, C3, R1, R2, R3]:
-        obj.speed(speed)
-    
-  turtle.mainloop()
+        for i in range(9):
+            #passes name to determine course of action
+            #using the same function for moving an object
+            if (i == 1):
+                obstacleName = nameof(L1)
+                allObstacle(L1)
+            elif (i == 2):
+                obstacleName = nameof(L2)
+                allObstacle(L2)
+            elif (i == 3):
+                obstacleName = nameof(L3)
+                allObstacle(L3)
+            elif (i == 4):
+                obstacleName = nameof(C1)
+                allObstacle(C1)
+            elif (i == 5):
+                obstacleName = nameof(C2)
+                allObstacle(C2)
+            elif (i == 6):
+                obstacleName = nameof(C3)
+                allObstacle(C3)
+            elif (i == 7):
+                obstacleName = nameof(R1)
+                allObstacle(R1)
+            elif (i == 8):
+                obstacleName = nameof(R2)
+                allObstacle(R2)
+            elif (i == 9):
+                obstacleName = nameof(R3)
+                allObstacle(R3)
+        
+        counter += 1
+        if (counter == threshold):
+            chance -= 20
+            threshold += 1000
+            speed += 1
 
-play()
+            L1.speed(speed)  
+            L2.speed(speed)  
+            L3.speed(speed)
+            C1.speed(speed)
+            C2.speed(speed)
+            C3.speed(speed)
+            R1.speed(speed)
+            R2.speed(speed)
+            R3.speed(speed)
+
+
+    gameOverScreen()
+    print("Obstacles passed:", obstacle_count)
+    print("Score:", counter)
+    turtle.mainloop()
+
 
 def gameOverScreen():
-  t.write('GAME OVER')
+    background.onkey(None, 'Left')
+    background.onkey(None, 'Right')
+    text.write("GAME OVER!\n",
+               move=False,
+               align='center',
+               font=('Arial', 14, 'normal'))
+
+
+play()
