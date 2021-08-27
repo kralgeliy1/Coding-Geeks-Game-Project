@@ -21,9 +21,7 @@ background.setup(width=500, height=500)  # height + width
 turtle.register_shape('centerlane.gif')
 turtle.register_shape('rightlane.gif')
 turtle.register_shape('leftlane.gif')
-turtle.register_shape('leftcar.gif')
-turtle.register_shape('rightcar.gif')
-turtle.register_shape('centerobs.gif')
+
 turtle.colormode(255)
 
 #obstacle turtles
