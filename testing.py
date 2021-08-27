@@ -234,7 +234,6 @@ def allObstacle(turtle):
         if ('L' in obstacleName):  #left obstacles
             if (y == -5):
                 random_shape = random.randint(0, 3)
-                print(random_shape)
                 turtle.shape(shape_list[random_shape])
 
                 turtle.color((0, 0, 0), (Rvalue, Gvalue, Bvalue))
@@ -244,7 +243,7 @@ def allObstacle(turtle):
                 x = 110
                 y = 0
                 visible = False
-                obstacle_count = 1
+                obstacle_count += 1
                 sizeL = 0.3
                 sizeW = 0.3
             else:
@@ -268,7 +267,6 @@ def allObstacle(turtle):
         elif ('C' in obstacleName):  #center obstacles
             if (y == -5):
                 random_shape = random.randint(0, 2)
-                print(random_shape)
                 turtle.shape(shape_list[random_shape])
                 turtle.color((0, 0, 0), (Rvalue, Gvalue, Bvalue))
             if (y == -275):
@@ -302,7 +300,6 @@ def allObstacle(turtle):
         elif ('R' in obstacleName):  #right obstacles
             if (y == -5):
                 random_shape = random.randint(0, 2)
-                print(random_shape)
                 turtle.shape(shape_list[random_shape])
 
                 turtle.color((0, 0, 0), (Rvalue, Gvalue, Bvalue))
