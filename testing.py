@@ -10,7 +10,6 @@ t.shape('circle')
 #this turtle will be used to print text on the screen
 text = turtle.Turtle()
 text.ht()
-text.color('white')
 text.speed(0)
 
 #this is to access the background/screen for the game
@@ -400,6 +399,7 @@ def play():
 def gameOverScreen():
     background.onkey(None, 'Left')
     background.onkey(None, 'Right')
+    background.clear()
     text.write("GAME OVER!\n",
                move=False,
                align='center',
